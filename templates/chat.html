@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Law AI</title>
+    <style>
+        /* Add some basic styling for the chat interface */
+        body {
+
+            background-image: url(/right-4926156_1280.jpg);
+            color: white;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #chat-box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #chat-box::-webkit-scrollbar-thumb {
+            background-color: #ccc; /* Example scrollbar thumb color */
+            border-radius: 4px;
+        }
+
+        #chat-box::-webkit-scrollbar-thumb:hover {
+            background-color: #aaa; /* Example hover color for scrollbar thumb */
+        }
+        #navbar {
+            background-color: white; /* Example navbar background color */
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        #navbar a {
+            float: right;
+            color: #0D221F; /* Example text color for navbar links */
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        #navbar a:hover {
+            background-color: #08a38f; /* Example hover color for navbar links */
+        }
+        #navbar .brand {
+            float: left;
+            display: block;
+            color: #0D221F; /* Example text color for the brand */
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        
+        #chat-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            color: black;
+            background-color: white;
+        }
+        #chat-box {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: whitesmoke;
+        }
+        #user-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            background-color: whitesmoke;
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar">
+        <div class="brand">LAW AI</div>
+        <a href="#">About Us</a>
+        <a href="/">Home</a>
+    </div>
+    <div id="chat-container">
+        <div id="chat-box">
+            <!-- Chat messages will be displayed here -->
+            <div><strong>Law AI:</strong> Hello! How can I help you today?</div>
+        </div>
+        <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+    </div>
+
+    <script>
+        // JavaScript function to handle user input
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // JavaScript function to send a message and get a response from ChatGPT
+        function sendMessage() {
+    const userInput = document.getElementById('user-input');
+    const userMessage = userInput.value;
+    userInput.value = '';
+
+    const chatBox = document.getElementById('chat-box');
+    chatBox.innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
+
+    // Send an asynchronous request to the Flask server
+    fetch('/process', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: userMessage })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Display the response from the Flask server
+        chatBox.innerHTML += `<div><strong>Law AI:</strong> ${data.response}</div>`;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+        fetch('/get_response', {
+        method: 'POST',
+        body: JSON.stringify({ message: userMessage }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const lawAiResponse = data.response;
+        chatBox.innerHTML += `<div><strong>Law AI:</strong> ${lawAiResponse}</div>`;
+    })
+    .catch(error => console.error(error));
+
+
+        
+    </script>
+</body>
+</html>
